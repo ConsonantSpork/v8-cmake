@@ -90,40 +90,7 @@ set(enable-exceptions
   $<$<CXX_COMPILER_ID:GNU>:-fexceptions>
 )
 
-#
-# d8
-#
-
-add_executable(
-  d8
-  $<${is-posix}:v8/src/d8/d8-posix.cc>
-  $<${is-win}:v8/src/d8/d8-windows.cc>
-  v8/src/d8/async-hooks-wrapper.cc
-  v8/src/d8/d8-console.cc
-  v8/src/d8/d8-js.cc
-  v8/src/d8/d8-platforms.cc
-  v8/src/d8/d8.cc
-)
-
-target_compile_definitions(d8 PRIVATE $<${is-msvc}:_HAS_EXCEPTIONS=0>)
-target_compile_options(d8 PRIVATE ${disable-exceptions})
-
-target_include_directories(d8
-  PUBLIC
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/v8/include>
-    $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
-  PRIVATE
-    $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}/v8>
-)
-
-target_link_libraries(d8
-  PRIVATE
-    v8_base_without_compiler
-    v8_compiler
-    v8_snapshot
-    v8_inspector
-    v8_libplatform
-)
+set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
 # more granular library support
 add_library(v8-i18n-support OBJECT)
